@@ -1,20 +1,34 @@
 import sqlite3
 
 
-def add_to_history(user_id, command):
-    conn = sqlite3.connect('../base.db')
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS history
-                 (user_id text, command text)''')
-    c.execute("INSERT INTO history VALUES (?, ?)", (user_id, command))
-    conn.commit()
-    conn.close()
+class DatabaseManager:
+    def __init__(self, db_path):
+        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+        self.cursor = self.conn.cursor()
+
+    def create_table(self):
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS api_data (
+            id INTEGER PRIMARY KEY, data TEXT)''')
+        self.conn.commit()
+
+    def close(self):
+        self.conn.close()
 
 
-def get_history(user_id):
-    conn = sqlite3.connect('../base.db')
-    c = conn.cursor()
-    c.execute("SELECT command FROM history WHERE user_id=? ORDER BY rowid DESC LIMIT 10", (user_id,))
-    history = c.fetchall()
-    conn.close()
-    return [command[0] for command in history]
+class CRUD:
+    def __init__(self, db_manager):
+        self.db_manager = db_manager
+
+    def read_data(self):
+        self.db_manager.cursor.execute('SELECT * FROM api_data')
+        rows = self.db_manager.cursor.fetchall()
+        return rows
+
+    def insert_data(self, data):
+        self.db_manager.cursor.execute('INSERT INTO api_data (data) VALUES (?)', (data,))
+        self.db_manager.conn.commit()
+
+
+def create_base():
+    db = DatabaseManager(db_path='../base.sql')
+    return db
