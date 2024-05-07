@@ -1,18 +1,17 @@
 from telebot import types
 
 from loader import bot
-from handlers.custom_handlers import custom, low, high, history, getdata
-from handlers.default_handlers import start, help, echo
+from handlers.custom_handlers import custom, low, high, history
+from handlers.default_handlers.default_handlers import help
 
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.reply_to(message, "Привет! Я бот для работы с API.")
     markup = types.ReplyKeyboardMarkup()
-    btn_getdata = types.KeyboardButton('Получить данные с сайта')
     btn_help = types.KeyboardButton('Помощь по командам')
     btn_low = types.KeyboardButton('Самая низкая стоимость')
-    markup.row(btn_getdata, btn_help, btn_low)
+    markup.row(btn_help, btn_low)
     btn_high = types.KeyboardButton('Самая высокая стоимость')
     btn_custom = types.KeyboardButton('Поиск по диапазону значений и кол-ва единиц')
     btn_history = types.KeyboardButton('Показать историю запросов')
@@ -22,9 +21,7 @@ def send_welcome(message):
 
 
 def on_click(message):
-    if message.text == 'Получить данные с сайта':
-        return getdata
-    elif message.text == 'Помощь по командам':
+    if message.text == 'Помощь по командам':
         return help
     elif message.text == 'Самая низкая стоимость':
         return low

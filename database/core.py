@@ -32,3 +32,6 @@ class CRUD:
 def create_base():
     db = DatabaseManager(db_path='../base.sql')
     return db
+
+
+create_base()

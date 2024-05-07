@@ -1,1 +1,1 @@
-from . import getdata, custom, getdata, high, history, low
+from . import custom_api

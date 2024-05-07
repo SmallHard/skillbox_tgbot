@@ -1,6 +1,7 @@
 import requests
+import json
 
-url = "https://api.kinopoisk.dev/v1.4/movie/search?page=1&limit=10&query=%D0%A0%D1%8D%D0%BC%D0%B1%D0%BE"
+url = "https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10"
 
 headers = {
     "accept": "application/json",
@@ -9,5 +10,22 @@ headers = {
 
 response = requests.get(url, headers=headers)
 
-print(response.text)
+if response.status_code == 200:
+    # Получаем данные в формате JSON
+    data = response.json()
+
+    # Записываем данные в JSON-файл
+    with open('data_json.json', 'w', encoding='UTF-8') as json_file:
+        json.dump(data, json_file)
+
+    # Проверяем, что файл был успешно создан и данные записаны
+    try:
+        with open('data_json.json', 'r', encoding='UTF-8') as json_file:
+            json_data = json.load(json_file)
+            print("Данные успешно сохранены в файл.")
+    except Exception as e:
+        print("Ошибка при сохранении данных в файл:", e)
+else:
+    print('Ошибка получения данных с сайта. Статус код:', response.status_code)
+    print('Текст ответа:', response.text)
 
