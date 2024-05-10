@@ -4,7 +4,13 @@ import handlers
 import site_API
 import database
 import config_data
-import api
+import logging
+
+logging.basicConfig(
+    filename='bot.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 
 async def main():

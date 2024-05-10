@@ -1,20 +1,19 @@
-import os.path
-import sys
 
-import json
+from site_API.core import json_data
 
 
-def find_highest_priced(category, quantity):
-    script_dir = os.path.dirname(sys.argv[0])
-    with open((os.path.join(script_dir, 'data_json.json')), 'rt', encoding='UTF-8') as json_file:
-        data = json.load(json_file)
+def find_highest_rated(quantity_of_goods, category):
+    films = []
+    rating = []
+    for value in json_data['docs']:
+        if value['genres'][0]['name'] == category:
+            films.append(value['name'])
+            rating.append(value['rating']['kp'])
 
-    if category not in data:
-        return f'Категория {category} не найдена.'
-    items = sorted(data[category], key=lambda x: x['year']['rating'], reverse=True)[:quantity]
+            if len(rating) == quantity_of_goods:
+                break
 
-    response = f"Товары или услуги с максимальной стоимостью в категории '{category}':\n"
-    for item in items:
-        response += f"{item['year']}: {item['rating']}\n"
+    films, rating = zip(*sorted(zip(films, rating), key=lambda x: x[1], reverse=True))
+    return list(zip(films, rating))
 
-    return response
+

@@ -1,7 +1,9 @@
+import os
+
 import requests
 import json
 
-url = "https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10"
+url = os.getenv('URL')
 
 headers = {
     "accept": "application/json",
@@ -16,7 +18,7 @@ if response.status_code == 200:
 
     # Записываем данные в JSON-файл
     with open('data_json.json', 'w', encoding='UTF-8') as json_file:
-        json.dump(data, json_file)
+        json.dump(data, json_file, indent=4, ensure_ascii=False)
 
     # Проверяем, что файл был успешно создан и данные записаны
     try:

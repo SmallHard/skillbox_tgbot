@@ -18,6 +18,7 @@ async def cmd_help(message: Message):
     await message.answer('\n'.join(text))
 
 
-@dp.message(lambda message: message not in (None, DEFAULT_COMMANDS))
-async def cmd_echo(message: Message):
-    await message.answer('Команды не существует')
+# @dp.message(lambda message: message not in (None, DEFAULT_COMMANDS))
+# async def cmd_echo(message: Message):
+#     await message.answer('Команды не существует')
+
