@@ -1,24 +1,23 @@
-user_request_history = []
+import sqlite3 as sq
+from loader import db_storage
 
 
-# Функция для добавления запроса в историю
-def add_to_history(user_id, request):
-    # Добавляем запрос в историю
-    user_request_history.append((user_id, request))
-    # Ограничиваем размер истории десятью последними запросами
-    if len(user_request_history) > 10:
-        user_request_history.pop(0)
+
+async def history(user_id, user_name, commands):
+        db = sq.connect(db_storage)
+        cursor = db.cursor()
+        cursor.execute('''INSERT INTO users(user_id, user_name, commands) VALUES (?, ?, ?)''', (user_id, user_name, commands))
+        db.commit()
+        db.close()
 
 
-# Функция для обработки команды /history
-def handle_history_command(user_id):
-    # Получаем последние десять запросов пользователя
-    user_history = [req for uid, req in user_request_history if uid == user_id][-10:]
-    # Формируем ответ
-    if user_history:
-        response = "История ваших последних десяти запросов:\n"
-        for request in user_history:
-            response += f"- {request}\n"
-    else:
-        response = "История ваших запросов пуста."
-    return response
+async def history_exited():
+    conn = sq.connect('../base.db')
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM users")
+    user_data = cur.fetchall()
+    user_str = "\n".join([str(data) for data in user_data])
+    conn.close()
+    return user_str
+    

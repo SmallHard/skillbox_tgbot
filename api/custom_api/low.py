@@ -1,18 +1,18 @@
-from site_API.core import json_data
+from site_API.core import api_core
 
 
 def find_lowers_rated(quantity_of_goods, category):
-    films = []
-    rating = []
-    for value in json_data['docs']:
+    films_low = []
+    rating_low = []
+    data = api_core()
+    for value in data['docs']:
         if value['genres'][0]['name'] == category:
-            films.append(value['name'])
-            rating.append(value['rating']['kp'])
+            films_low.append(value['name'])
+            rating_low.append(value['rating']['kp'])
 
-            if len(rating) == quantity_of_goods:
+            if len(rating_low) == quantity_of_goods:
                 break
 
-    films, rating = zip(*sorted(zip(films, rating), key=lambda x: x[1], reverse=False))
-    return list(zip(films, rating))
-
-
+    films_low, rating_low = zip(*sorted(zip(films_low, rating_low), key=lambda x: x[1]))
+    result_low = list(zip(films_low, rating_low))
+    return result_low

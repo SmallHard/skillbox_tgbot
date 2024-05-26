@@ -8,3 +8,4 @@ API_TOKEN = config.BOT_TOKEN
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
+db_storage = 'base.db'

@@ -2,18 +2,19 @@ import asyncio
 from loader import dp, bot
 import handlers
 import site_API
-import database
+from database.core import db_start
 import config_data
 import logging
 
-logging.basicConfig(
-    filename='bot.log',
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
 
 
 async def main():
+    logging.basicConfig(
+        filename='bot.log',
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    await db_start()
     await dp.start_polling(bot)
 
 

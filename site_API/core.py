@@ -7,27 +7,17 @@ url = os.getenv('URL')
 
 headers = {
     "accept": "application/json",
-    "X-API-KEY": "N5YXYK3-NY740B6-MVAH0P2-CM5RZAT"
+    "API_KEY": os.getenv('API_KEY')
 }
 
-response = requests.get(url, headers=headers)
+response = requests.get(url, headers=headers, timeout=15)
 
-if response.status_code == 200:
-    # Получаем данные в формате JSON
-    data = response.json()
 
-    # Записываем данные в JSON-файл
-    with open('data_json.json', 'w', encoding='UTF-8') as json_file:
-        json.dump(data, json_file, indent=4, ensure_ascii=False)
-
-    # Проверяем, что файл был успешно создан и данные записаны
-    try:
-        with open('data_json.json', 'r', encoding='UTF-8') as json_file:
-            json_data = json.load(json_file)
-            print("Данные успешно сохранены в файл.")
-    except Exception as e:
-        print("Ошибка при сохранении данных в файл:", e)
-else:
-    print('Ошибка получения данных с сайта. Статус код:', response.status_code)
-    print('Текст ответа:', response.text)
+def api_core():
+    if response.status_code == 200:    
+        data = response.json()
+        return data
+    else:
+        print('Ошибка получения данных с сайта. Статус код:', response.status_code)
+        print('Текст ответа:', response.text)
 

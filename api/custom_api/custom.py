@@ -1,31 +1,18 @@
-from site_API import core
+from site_API.core import api_core
 
 
-def handle_custom_command(user_input):
-    # Парсинг пользовательского ввода
-    parts = user_input.split()
-    if len(parts) != 5:
-        return "Неправильный формат команды. Используйте: /custom <товар> <цена_от> <цена_до> <количество>"
+def find_custom_rated(custom_low, custom_high, category, count):
+    films_custom = []
+    data = api_core()
+    for value in data['docs']:
+        if value['genres'][0]['name'] == category and (custom_low <= value['rating']['kp'] <= custom_high)\
+                or custom_low >= value['rating']['kp'] >= custom_high:
+            films_custom.append((value['name'], value['rating']['kp']))
 
-    product_type = parts[1]
-    try:
-        price_from = float(parts[2])
-        price_to = float(parts[3])
-        count = int(parts[4])
-    except ValueError:
-        return "Неверный формат входных данных. Цена должна быть числом, количество - целым числом."
+            if len(films_custom) == count:
+                break
 
-    # Получение данных из внешнего API
-    products = core.response()
+    films_custom.sort(key=lambda x: x[1])
 
-    # Проверка на ошибки при получении данных
-    if products is None:
-        return "Ошибка при получении данных с сервера."
+    return films_custom
 
-    # Вывод результатов
-    result = f"Товары '{product_type}' в диапазоне цен от {price_from} до {price_to} руб.:\n"
-    for product in products:
-        result += f"{product['name']} - {product['price']} руб., Доступность: {'Да' if product['availability'] else 'Нет'}, " \
-                  f"Местоположение: {product['location']}\n"
-
-    return result

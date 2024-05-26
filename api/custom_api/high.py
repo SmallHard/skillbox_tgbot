@@ -1,11 +1,11 @@
-
-from site_API.core import json_data
+from site_API.core import api_core
 
 
 def find_highest_rated(quantity_of_goods, category):
     films = []
     rating = []
-    for value in json_data['docs']:
+    data = api_core()
+    for value in data['docs']:
         if value['genres'][0]['name'] == category:
             films.append(value['name'])
             rating.append(value['rating']['kp'])
@@ -14,6 +14,6 @@ def find_highest_rated(quantity_of_goods, category):
                 break
 
     films, rating = zip(*sorted(zip(films, rating), key=lambda x: x[1], reverse=True))
-    return list(zip(films, rating))
+    result_high = list(zip(films, rating))
 
-
+    return result_high
