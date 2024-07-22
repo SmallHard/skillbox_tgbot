@@ -1,1 +1,1 @@
-from . import default_handlers
+from . import default_handlers, echo_handler

@@ -1,11 +1,11 @@
 import asyncio
+
 from loader import dp, bot
 import handlers
-import site_API
-from database.core import db_start
+from site_API.core import api_core
+
 import config_data
 import logging
-
 
 
 async def main():
@@ -14,7 +14,8 @@ async def main():
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
-    await db_start()
+    api_core()
+
     await dp.start_polling(bot)
 
 

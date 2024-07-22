@@ -1,20 +1,19 @@
 import os
-
+from requests import status_codes
 import requests
-import json
-
-url = os.getenv('URL')
-
-headers = {
-    "accept": "application/json",
-    "API_KEY": os.getenv('API_KEY')
-}
-
-response = requests.get(url, headers=headers, timeout=15)
 
 
 def api_core():
-    if response.status_code == 200:    
+    url = os.getenv('URL')
+    api_key = os.getenv('API_KEY')
+
+    headers = {
+        "accept": "application/json",
+        "X-API-KEY": api_key
+    }
+
+    response = requests.get(url, headers=headers, timeout=5)
+    if response.status_code == 200:
         data = response.json()
         return data
     else:

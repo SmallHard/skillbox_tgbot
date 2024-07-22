@@ -1,10 +1,10 @@
-from aiogram.filters import StateFilter
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
 from api.custom_api.custom import find_custom_rated
 from api.custom_api import custom
+from api.custom_api.history import history
 
 from loader import dp
 
@@ -18,20 +18,21 @@ class Custom(StatesGroup):
 
 @dp.message(Command('custom'))
 async def custom_cmd(message: Message, state: FSMContext):
+    await history(message.from_user.username, message.text)
     await state.set_state(Custom.item_custom)
-    await message.answer('Введите услугу')
-
-
-@dp.message(Custom.count_custom)
-async def item_custom(message: Message, state: FSMContext):
-    await state.update_data(count_custom=message.text)
-    await state.set_state(Custom.count_custom)
-    await message.answer('Введите кол-во элементов:')
+    await message.answer('Введите категорию фильмов')
 
 
 @dp.message(Custom.item_custom)
 async def item_custom(message: Message, state: FSMContext):
     await state.update_data(item_custom=message.text)
+    await state.set_state(Custom.count_custom)
+    await message.answer('Введите кол-во элементов:')
+
+
+@dp.message(Custom.count_custom)
+async def item_custom(message: Message, state: FSMContext):
+    await state.update_data(count_custom=message.text)
     await state.set_state(Custom.coll_custom_low)
     await message.answer('Введите минимальный рейтинг:')
 
@@ -53,7 +54,6 @@ async def coll_high_custom(message: Message, state: FSMContext):
     count_custom = int(user_data['count_custom'])
     result = find_custom_rated(coll_low, coll_high, items_custom, count_custom)
     await message.answer(f'Вы выбрали {items_custom} кол-во от {coll_low} до {coll_high}')
-    print(result)
     await message.answer(str(result))
-
     await state.clear()
+

@@ -1,12 +1,15 @@
+from aiogram import F
 from aiogram.filters import StateFilter
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
+
+from api.custom_api.history import history
 from api.custom_api.low import find_lowers_rated
 from api.custom_api import low
-
-from loader import dp
+import sqlite3 as sq
+from loader import dp, db_storage
 
 
 class Low(StatesGroup):
@@ -15,9 +18,9 @@ class Low(StatesGroup):
 
 
 @dp.message(Command('low'))
-async def high_cmd(message: Message, state: FSMContext):
+async def low_cmd(message: Message, state: FSMContext):
     await state.set_state(Low.item_low)
-    await message.answer('Введите услугу')
+    await message.answer('Введите категорию фильмов')
 
 
 @dp.message(Low.item_low)
@@ -33,10 +36,9 @@ async def high_coll(message: Message, state: FSMContext):
     user_data_low = await state.get_data()
     items = user_data_low['item_low']
     coll_items = int(user_data_low['coll_low'])
-    print(items, coll_items)
     result_low = find_lowers_rated(coll_items, items)
     await message.answer(f'Вы выбрали {items} кол-во {coll_items}')
-    print(result_low)
     await message.answer(str(result_low))
+    await history(message.from_user.username, message.text)
 
     await state.clear()
